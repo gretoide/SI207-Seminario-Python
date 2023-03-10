@@ -1,0 +1,14 @@
+Realice al menos una función para cada una de las siguientes operaciones. Cada función deberá recibir como parámetro el directorio en donde trabajará.
+
+1. Genere un listado con los nombres de archivos del directorio.
+2. Genere un listado con los nombres de los archivos que comiencen con una letra obtenida al azar (entre todo el alfabeto).
+3. Genere una lista con aquellos archivos que han sido modificados en los últimos 30 días y que sean de un tamaño menor a una cantidad (en bytes) ingresada por teclado.
+4. Devuelva el tamaño total de los archivos de imagen (.png, .jpg, .bmp, .jpeg).
+5. Devuelva  una lista con los nombres de los archivos del directorio ordenados por tamaño.
+6. Modifique los incisos anteriores para que utilicen lambda (en caso de ser necesario).
+
+
+
+El ejercicio puede ser realizado en grupo pero se debe subir en forma individual.
+
+Se debe subir un sólo archivo con extensión .py

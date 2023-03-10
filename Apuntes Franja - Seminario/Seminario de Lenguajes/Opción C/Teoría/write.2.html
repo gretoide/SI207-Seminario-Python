@@ -1,0 +1,380 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="../../../style.css" title="style" />
+    <link rel="stylesheet" type="text/css" href="../style.css" title="style" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+    <title>write(2) - Linux manual page</title>
+</head>
+
+<body>
+
+<div class="page-top"><a id="top_of_page"></a></div>
+<!--%%%TOP_BAR%%%-->
+    <div class="nav-bar">
+        <table class="nav-table">
+            <tr>
+                <td class="nav-cell">
+                    <p class="nav-text">
+                        <a href="../../../index.html">man7.org</a> &gt; Linux &gt; <a href="../index.html">man-pages</a>
+                    </p>
+                </td>
+                <td class="training-cell">
+                    <p class="training-text"><a class="training-link" href="http://man7.org/training/">Linux/UNIX system programming training</a></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+<hr class="nav-end" />
+
+<!--%%%PAGE_START%%%-->
+
+
+<table class="sec-table">
+<tr>
+    <td>
+        <p class="section-dir">
+<a href="#NAME">NAME</a> | <a href="#SYNOPSIS">SYNOPSIS</a> | <a href="#DESCRIPTION">DESCRIPTION</a> | <a href="#RETURN_VALUE">RETURN&nbsp;VALUE</a> | <a href="#ERRORS">ERRORS</a> | <a href="#CONFORMING_TO">CONFORMING&nbsp;TO</a> | <a href="#NOTES">NOTES</a> | <a href="#BUGS">BUGS</a> | <a href="#SEE_ALSO">SEE&nbsp;ALSO</a> | <a href="#COLOPHON">COLOPHON</a>
+        </p>
+    </td>
+    <td class="search-box">
+        <div class="man-search-box">
+
+            <form method="get" action="http://www.google.com/search">
+                <fieldset class="man-search">
+                    <input type="text" name="q" size="10" maxlength="255" value="" />
+                    <input type="hidden" name="sitesearch" value="man7.org/linux/man-pages" />
+                    <input type="submit" name="sa" value="Search online pages" />
+                </fieldset>
+            </form>
+
+        </div>
+    </td>
+    <td> </td>
+</tr>
+</table>
+
+<pre>
+<span class="headline">WRITE(2)                  Linux Programmer's Manual                 WRITE(2)</span>
+</pre>
+<h2><a id="NAME" href="#NAME"></a>NAME  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       write - write to a file descriptor
+</pre>
+<h2><a id="SYNOPSIS" href="#SYNOPSIS"></a>SYNOPSIS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <b>#include &lt;unistd.h&gt;</b>
+
+       <b>ssize_t write(int </b><i>fd</i><b>, const void *</b><i>buf</i><b>, size_t </b><i>count</i><b>);</b>
+</pre>
+<h2><a id="DESCRIPTION" href="#DESCRIPTION"></a>DESCRIPTION  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <b>write</b>() writes up to <i>count</i> bytes from the buffer pointed <i>buf</i> to the
+       file referred to by the file descriptor <i>fd</i>.
+
+       The number of bytes written may be less than <i>count</i> if, for example,
+       there is insufficient space on the underlying physical medium, or the
+       <b>RLIMIT_FSIZE </b>resource limit is encountered (see <a href="../man2/setrlimit.2.html">setrlimit(2)</a>), or the
+       call was interrupted by a signal handler after having written less
+       than <i>count</i> bytes.  (See also <a href="../man7/pipe.7.html">pipe(7)</a>.)
+
+       For a seekable file (i.e., one to which <a href="../man2/lseek.2.html">lseek(2)</a> may be applied, for
+       example, a regular file) writing takes place at the file offset, and
+       the file offset is incremented by the number of bytes actually
+       written.  If the file was <a href="../man2/open.2.html">open(2)</a>ed with <b>O_APPEND</b>, the file offset is
+       first set to the end of the file before writing.  The adjustment of
+       the file offset and the write operation are performed as an atomic
+       step.
+
+       POSIX requires that a <a href="../man2/read.2.html">read(2)</a> that can be proved to occur after a
+       <b>write</b>() has returned will return the new data.  Note that not all
+       filesystems are POSIX conforming.
+
+       According to POSIX.1, if <i>count</i> is greater than <b>SSIZE_MAX</b>, the result
+       is implementation-defined; see NOTES for the upper limit on Linux.
+</pre>
+<h2><a id="RETURN_VALUE" href="#RETURN_VALUE"></a>RETURN VALUE  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       On success, the number of bytes written is returned (zero indicates
+       nothing was written).  It is not an error if this number is smaller
+       than the number of bytes requested; this may happen for example
+       because the disk device was filled.  See also NOTES.
+
+       On error, -1 is returned, and <i><a href="../man3/errno.3.html">errno</a></i> is set appropriately.
+
+       If <i>count</i> is zero and <i>fd</i> refers to a regular file, then <b>write</b>() may
+       return a failure status if one of the errors below is detected.  If
+       no errors are detected, or error detection is not performed, 0 will
+       be returned without causing any other effect.  If <i>count</i> is zero and
+       <i>fd</i> refers to a file other than a regular file, the results are not
+       specified.
+</pre>
+<h2><a id="ERRORS" href="#ERRORS"></a>ERRORS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <b>EAGAIN </b>The file descriptor <i>fd</i> refers to a file other than a socket
+              and has been marked nonblocking (<b>O_NONBLOCK</b>), and the write
+              would block.  See <a href="../man2/open.2.html">open(2)</a> for further details on the
+              <b>O_NONBLOCK </b>flag.
+
+       <b>EAGAIN </b>or <b>EWOULDBLOCK</b>
+              The file descriptor <i>fd</i> refers to a socket and has been marked
+              nonblocking (<b>O_NONBLOCK</b>), and the write would block.
+              POSIX.1-2001 allows either error to be returned for this case,
+              and does not require these constants to have the same value,
+              so a portable application should check for both possibilities.
+
+       <b>EBADF  </b><i>fd</i> is not a valid file descriptor or is not open for writing.
+
+       <b>EDESTADDRREQ</b>
+              <i>fd</i> refers to a datagram socket for which a peer address has
+              not been set using <a href="../man2/connect.2.html">connect(2)</a>.
+
+       <b>EDQUOT </b>The user's quota of disk blocks on the filesystem containing
+              the file referred to by <i>fd</i> has been exhausted.
+
+       <b>EFAULT </b><i>buf</i> is outside your accessible address space.
+
+       <b>EFBIG  </b>An attempt was made to write a file that exceeds the
+              implementation-defined maximum file size or the process's file
+              size limit, or to write at a position past the maximum allowed
+              offset.
+
+       <b>EINTR  </b>The call was interrupted by a signal before any data was
+              written; see <a href="../man7/signal.7.html">signal(7)</a>.
+
+       <b>EINVAL </b><i>fd</i> is attached to an object which is unsuitable for writing;
+              or the file was opened with the <b>O_DIRECT </b>flag, and either the
+              address specified in <i>buf</i>, the value specified in <i>count</i>, or the
+              file offset is not suitably aligned.
+
+       <b>EIO    </b>A low-level I/O error occurred while modifying the inode.
+
+       <b>ENOSPC </b>The device containing the file referred to by <i>fd</i> has no room
+              for the data.
+
+       <b>EPERM  </b>The operation was prevented by a file seal; see <a href="../man2/fcntl.2.html">fcntl(2)</a>.
+
+       <b>EPIPE  </b><i>fd</i> is connected to a pipe or socket whose reading end is
+              closed.  When this happens the writing process will also
+              receive a <b>SIGPIPE </b>signal.  (Thus, the write return value is
+              seen only if the program catches, blocks or ignores this
+              signal.)
+
+       Other errors may occur, depending on the object connected to <i>fd</i>.
+</pre>
+<h2><a id="CONFORMING_TO" href="#CONFORMING_TO"></a>CONFORMING TO  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       SVr4, 4.3BSD, POSIX.1-2001.
+
+       Under SVr4 a write may be interrupted and return <b>EINTR </b>at any point,
+       not just before any data is written.
+</pre>
+<h2><a id="NOTES" href="#NOTES"></a>NOTES  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       The types <i>size_t</i> and <i>ssize_t</i> are, respectively, unsigned and signed
+       integer data types specified by POSIX.1.
+
+       A successful return from <b>write</b>() does not make any guarantee that
+       data has been committed to disk.  In fact, on some buggy
+       implementations, it does not even guarantee that space has
+       successfully been reserved for the data.  The only way to be sure is
+       to call <a href="../man2/fsync.2.html">fsync(2)</a> after you are done writing all your data.
+
+       If a <b>write</b>() is interrupted by a signal handler before any bytes are
+       written, then the call fails with the error <b>EINTR</b>; if it is
+       interrupted after at least one byte has been written, the call
+       succeeds, and returns the number of bytes written.
+
+       On Linux, <b>write</b>() (and similar system calls) will transfer at most
+       0x7ffff000 (2,147,479,552) bytes, returning the number of bytes
+       actually transferred.  (This is true on both 32-bit and 64-bit
+       systems.)
+</pre>
+<h2><a id="BUGS" href="#BUGS"></a>BUGS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       According to POSIX.1-2008/SUSv4 Section XSI 2.9.7 ("Thread
+       Interactions with Regular File Operations"):
+
+           All of the following functions shall be atomic with respect to
+           each other in the effects specified in POSIX.1-2008 when they
+           operate on regular files or symbolic links: ...
+
+       Among the APIs subsequently listed are <b>write</b>() and <a href="../man2/writev.2.html">writev(2)</a>.  And
+       among the effects that should be atomic across threads (and
+       processes) are updates of the file offset.  However, on Linux before
+       version 3.14, this was not the case: if two processes that share an
+       open file description (see <a href="../man2/open.2.html">open(2)</a>) perform a <b>write</b>() (or <a href="../man2/writev.2.html">writev(2)</a>)
+       at the same time, then the I/O operations were not atomic with
+       respect updating the file offset, with the result that the blocks of
+       data output by the two processes might (incorrectly) overlap.  This
+       problem was fixed in Linux 3.14.
+</pre>
+<h2><a id="SEE_ALSO" href="#SEE_ALSO"></a>SEE ALSO  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <a href="../man2/close.2.html">close(2)</a>, <a href="../man2/fcntl.2.html">fcntl(2)</a>, <a href="../man2/fsync.2.html">fsync(2)</a>, <a href="../man2/ioctl.2.html">ioctl(2)</a>, <a href="../man2/lseek.2.html">lseek(2)</a>, <a href="../man2/open.2.html">open(2)</a>, <a href="../man2/pwrite.2.html">pwrite(2)</a>,
+       <a href="../man2/read.2.html">read(2)</a>, <a href="../man2/select.2.html">select(2)</a>, <a href="../man2/writev.2.html">writev(2)</a>, <a href="../man3/fwrite.3.html">fwrite(3)</a>
+</pre>
+<h2><a id="COLOPHON" href="#COLOPHON"></a>COLOPHON  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       This page is part of release 4.12 of the Linux <i>man-pages</i> project.  A
+       description of the project, information about reporting bugs, and the
+       latest version of this page, can be found at
+       <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.
+
+<span class="footline">Linux                            2017-03-13                         WRITE(2)</span>
+</pre>
+
+<hr class="end-man-text" />
+<p>Pages that refer to this page: 
+    <a href="../man1/pv.1.html">pv(1)</a>,&nbsp; 
+    <a href="../man1/strace.1.html">strace(1)</a>,&nbsp; 
+    <a href="../man1/telnet-probe.1.html">telnet-probe(1)</a>,&nbsp; 
+    <a href="../man2/close.2.html">close(2)</a>,&nbsp; 
+    <a href="../man2/epoll_ctl.2.html">epoll_ctl(2)</a>,&nbsp; 
+    <a href="../man2/eventfd.2.html">eventfd(2)</a>,&nbsp; 
+    <a href="../man2/fcntl.2.html">fcntl(2)</a>,&nbsp; 
+    <a href="../man2/getpeername.2.html">getpeername(2)</a>,&nbsp; 
+    <a href="../man2/getrlimit.2.html">getrlimit(2)</a>,&nbsp; 
+    <a href="../man2/lseek.2.html">lseek(2)</a>,&nbsp; 
+    <a href="../man2/memfd_create.2.html">memfd_create(2)</a>,&nbsp; 
+    <a href="../man2/mmap.2.html">mmap(2)</a>,&nbsp; 
+    <a href="../man2/open.2.html">open(2)</a>,&nbsp; 
+    <a href="../man2/pipe.2.html">pipe(2)</a>,&nbsp; 
+    <a href="../man2/prctl.2.html">prctl(2)</a>,&nbsp; 
+    <a href="../man2/pread.2.html">pread(2)</a>,&nbsp; 
+    <a href="../man2/read.2.html">read(2)</a>,&nbsp; 
+    <a href="../man2/readv.2.html">readv(2)</a>,&nbsp; 
+    <a href="../man2/seccomp.2.html">seccomp(2)</a>,&nbsp; 
+    <a href="../man2/select.2.html">select(2)</a>,&nbsp; 
+    <a href="../man2/select_tut.2.html">select_tut(2)</a>,&nbsp; 
+    <a href="../man2/send.2.html">send(2)</a>,&nbsp; 
+    <a href="../man2/sendfile.2.html">sendfile(2)</a>,&nbsp; 
+    <a href="../man2/socket.2.html">socket(2)</a>,&nbsp; 
+    <a href="../man2/socketpair.2.html">socketpair(2)</a>,&nbsp; 
+    <a href="../man2/syscalls.2.html">syscalls(2)</a>,&nbsp; 
+    <a href="../man3/aio_error.3.html">aio_error(3)</a>,&nbsp; 
+    <a href="../man3/aio_return.3.html">aio_return(3)</a>,&nbsp; 
+    <a href="../man3/aio_write.3.html">aio_write(3)</a>,&nbsp; 
+    <a href="../man3/curs_print.3x.html">curs_print(3x)</a>,&nbsp; 
+    <a href="../man3/dbopen.3.html">dbopen(3)</a>,&nbsp; 
+    <a href="../man3/fclose.3.html">fclose(3)</a>,&nbsp; 
+    <a href="../man3/fflush.3.html">fflush(3)</a>,&nbsp; 
+    <a href="../man3/fgetc.3.html">fgetc(3)</a>,&nbsp; 
+    <a href="../man3/fopen.3.html">fopen(3)</a>,&nbsp; 
+    <a href="../man3/fread.3.html">fread(3)</a>,&nbsp; 
+    <a href="../man3/gets.3.html">gets(3)</a>,&nbsp; 
+    <a href="../man3/mkfifo.3.html">mkfifo(3)</a>,&nbsp; 
+    <a href="../man3/mpool.3.html">mpool(3)</a>,&nbsp; 
+    <a href="../man3/puts.3.html">puts(3)</a>,&nbsp; 
+    <a href="../man3/stdio.3.html">stdio(3)</a>,&nbsp; 
+    <a href="../man3/xdr.3.html">xdr(3)</a>,&nbsp; 
+    <a href="../man3/xfsctl.3.html">xfsctl(3)</a>,&nbsp; 
+    <a href="../man4/dsp56k.4.html">dsp56k(4)</a>,&nbsp; 
+    <a href="../man4/fuse.4.html">fuse(4)</a>,&nbsp; 
+    <a href="../man4/lirc.4.html">lirc(4)</a>,&nbsp; 
+    <a href="../man4/st.4.html">st(4)</a>,&nbsp; 
+    <a href="../man5/proc.5.html">proc(5)</a>,&nbsp; 
+    <a href="../man5/systemd.exec.5.html">systemd.exec(5)</a>,&nbsp; 
+    <a href="../man7/aio.7.html">aio(7)</a>,&nbsp; 
+    <a href="../man7/cpuset.7.html">cpuset(7)</a>,&nbsp; 
+    <a href="../man7/epoll.7.html">epoll(7)</a>,&nbsp; 
+    <a href="../man7/fanotify.7.html">fanotify(7)</a>,&nbsp; 
+    <a href="../man7/inode.7.html">inode(7)</a>,&nbsp; 
+    <a href="../man7/inotify.7.html">inotify(7)</a>,&nbsp; 
+    <a href="../man7/pipe.7.html">pipe(7)</a>,&nbsp; 
+    <a href="../man7/sched.7.html">sched(7)</a>,&nbsp; 
+    <a href="../man7/signal.7.html">signal(7)</a>,&nbsp; 
+    <a href="../man7/signal-safety.7.html">signal-safety(7)</a>,&nbsp; 
+    <a href="../man7/socket.7.html">socket(7)</a>,&nbsp; 
+    <a href="../man7/spufs.7.html">spufs(7)</a>,&nbsp; 
+    <a href="../man7/tcp.7.html">tcp(7)</a>,&nbsp; 
+    <a href="../man7/udp.7.html">udp(7)</a>,&nbsp; 
+    <a href="../man7/x25.7.html">x25(7)</a>,&nbsp; 
+    <a href="../man8/xfs_io.8.html">xfs_io(8)</a>
+</p>
+<hr/>
+
+<p class="page-copyright"><a href="../man2/write.2.license.html">Copyright and license for this manual page</a></p> 
+<hr class="start-footer" />
+
+<div class="footer"> 
+
+<table class="colophon-table">
+    <tr>
+    <td class="pub-info">
+        <p>
+            HTML rendering created 2017-07-13
+            by <a href="http://man7.org/mtk/index.html">Michael Kerrisk</a>, 
+            author of 
+            <a href="http://man7.org/tlpi/"><em>The Linux Programming Interface</em></a>, 
+            maintainer of the 
+            <a href="https://www.kernel.org/doc/man-pages/">Linux <em>man-pages</em> project</a>.
+        </p>
+        <p>
+            For details of in-depth
+            <strong>Linux/UNIX system programming training courses</strong>
+            that I teach, look <a href="http://man7.org/training/">here</a>.
+        </p>
+        <p>
+            Hosting by <a href="http://www.jambit.com/index_en.html">jambit GmbH</a>.
+        </p>
+        <p>
+            <a href="http://validator.w3.org/check?uri=referer">
+            <img src="http://www.w3.org/Icons/valid-xhtml11"
+                alt="Valid XHTML 1.1" height="31" width="88" />
+            </a>
+        </p>
+    </td>
+    <td class="colophon-divider">
+    </td>
+    <td class="tlpi-cover">
+        <a href="http://man7.org/tlpi/"><img src="http://man7.org/tlpi/cover/TLPI-front-cover-vsmall.png" alt="Cover of TLPI" /></a>
+    </td>
+    </tr>
+</table>
+
+</div>
+
+<hr class="end-footer" />
+
+
+
+<!--BEGIN-SITETRACKING-->
+<!-- SITETRACKING.man7.org_linux_man-pages -->
+
+<!-- Start of StatCounter Code (xhtml) -->
+
+<script type="text/javascript">
+//<![CDATA[
+var sc_project=7422636; 
+var sc_invisible=1; 
+var sc_security="9b6714ff"; 
+//]]>
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter_xhtml.js"></script>
+<noscript><div class="statcounter"><a title="website
+statistics" href="http://statcounter.com/"
+class="statcounter"><img class="statcounter"
+src="http://c.statcounter.com/7422636/0/9b6714ff/1/"
+alt="website statistics" /></a></div></noscript>
+
+<!-- End of StatCounter Code -->
+
+
+<!-- Start of Google Analytics Code -->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9830363-8']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<!-- End of Google Analytics Code -->
+
+<!--END-SITETRACKING-->
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+Implementar un script que (en una ventana) permita abrir un archivo ".json" o ".csv" y muestre su contenido en una tabla (elemento Table de pysimplegui).
+Añada un botón que permita convertir el archivo al otro formato, es decir que si el archivo abierto es ".csv", lo deberá convertir a ".json" y viceversa.
+Por ejemplo, si se elige un archivo "jugadores.json", deberá generar "jugadores.csv" (respetando el formato).
+Capture las posibles excepciones que pueden surgir en caso que el archivo seleccionado no exista o no tenga los permisos necesarios.
+
+
+Aclaración: el formato CSV en la primera línea siempre deberá contener los nombres de las columnas.
+
+El ejercicio puede ser realizado en grupo pero se debe subir en forma individual.
+Se debe subir un sólo archivo  de nombre Apellido_Segundo_Entregable.py
